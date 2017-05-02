@@ -28,7 +28,7 @@ $ cat bar.json | dedup -k key
 Do something for the twitter statuses getting from crontab.
 
 ```
-* */1 * * * twty | dedup -k id_str | do-something
+* */1 * * * twty -json | dedup -k id_str | do-something
 ```
 
 ## Installation
