@@ -6,6 +6,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/syndtr/goleveldb/leveldb"
 	"github.com/syndtr/goleveldb/leveldb/opt"
@@ -34,7 +35,7 @@ func main() {
 			fmt.Fprintf(os.Stderr, "%v: %v\n", os.Args[0], err)
 			continue
 		}
-		fv, ok := v[k]
+		_, ok := v[k]
 		if !ok {
 			fmt.Fprintf(os.Stderr, "%v: %q not found\n", os.Args[0], k)
 			continue
@@ -46,7 +47,7 @@ func main() {
 				fmt.Fprintf(os.Stderr, "%v: %v\n", os.Args[0], err)
 				continue
 			}
-			err = store.Put([]byte(k), []byte(fmt.Sprint(fv)), &opt.WriteOptions{Sync: true})
+			err = store.Put([]byte(k), []byte(fmt.Sprint(time.Now().Unix())), &opt.WriteOptions{Sync: true})
 			if err != nil {
 				fmt.Fprintf(os.Stderr, "%v: %v\n", os.Args[0], err)
 				continue
