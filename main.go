@@ -35,19 +35,20 @@ func main() {
 			fmt.Fprintf(os.Stderr, "%v: %v\n", os.Args[0], err)
 			continue
 		}
-		_, ok := v[k]
+		vk, ok := v[k]
 		if !ok {
 			fmt.Fprintf(os.Stderr, "%v: %q not found\n", os.Args[0], k)
 			continue
 		}
+		bk := []byte(fmt.Sprint(vk))
 
-		_, err = store.Get([]byte(k), &opt.ReadOptions{DontFillCache: true})
+		_, err = store.Get(bk, &opt.ReadOptions{DontFillCache: true})
 		if err != nil {
 			if err != leveldb.ErrNotFound {
 				fmt.Fprintf(os.Stderr, "%v: %v\n", os.Args[0], err)
 				continue
 			}
-			err = store.Put([]byte(k), []byte(fmt.Sprint(time.Now().Unix())), &opt.WriteOptions{Sync: true})
+			err = store.Put(bk, []byte(fmt.Sprint(time.Now().Unix())), &opt.WriteOptions{Sync: true})
 			if err != nil {
 				fmt.Fprintf(os.Stderr, "%v: %v\n", os.Args[0], err)
 				continue

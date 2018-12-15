@@ -7,7 +7,7 @@ de-duplicate line from stdin
 ```
 Usage of dedup:
   -f string
-    	storage file (default ".xstore")
+    	storage file (default ".dedup")
   -k string
     	identify for the key (default "id")
 ```
@@ -36,7 +36,7 @@ $ cat bar.json | dedup -k key
 Do something for the twitter statuses getting from crontab.
 
 ```
-* */1 * * * twty -json | dedup -k id_str -f /tmp/twty | do-something
+* */1 * * * twty -json | dedup -k id_str -f /tmp/twty | jsonargs do-something
 ```
 
 ## Installation
