@@ -12,19 +12,34 @@ import (
 	"github.com/syndtr/goleveldb/leveldb/opt"
 )
 
-func main() {
+func run() int {
 	var f, k string
+	var dump bool
 
 	flag.StringVar(&f, "f", ".dedup", "storage file")
 	flag.StringVar(&k, "k", "id", "identify for the key")
+	flag.BoolVar(&dump, "dump", false, "dump stored keys")
 	flag.Parse()
 
 	store, err := leveldb.OpenFile(f, nil)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "%v: %v\n", os.Args[0], err)
-		os.Exit(1)
+		return 1
 	}
 	defer store.Close()
+
+	if dump {
+		snapshot, err := store.GetSnapshot()
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "%v: %q not found\n", os.Args[0], k)
+			return 1
+		}
+		it := snapshot.NewIterator(nil, nil)
+		for it.Next() {
+			fmt.Println(string(it.Key()))
+		}
+		return 0
+	}
 
 	scanner := bufio.NewScanner(os.Stdin)
 	for scanner.Scan() {
@@ -56,4 +71,9 @@ func main() {
 			fmt.Println(line)
 		}
 	}
+	return 0
+}
+
+func main() {
+	os.Exit(run())
 }
