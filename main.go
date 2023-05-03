@@ -1,10 +1,10 @@
 package main
 
 import (
+	"bufio"
 	"encoding/json"
 	"flag"
 	"fmt"
-	"io"
 	"os"
 	"time"
 
@@ -41,17 +41,15 @@ func run() int {
 		return 0
 	}
 
-	dec := json.NewDecoder(os.Stdin)
+	scanner := bufio.NewScanner(os.Stdin)
 	enc := json.NewEncoder(os.Stdout)
-	for {
+	for scanner.Scan() {
 		var v map[string]interface{}
-		err = dec.Decode(&v)
+		text := scanner.Text()
+		err = json.Unmarshal([]byte(text), &v)
 		if err != nil {
-			if err == io.EOF {
-				break
-			}
 			fmt.Fprintf(os.Stderr, "%v: %v\n", os.Args[0], err)
-			return 1
+			continue
 		}
 		vk, ok := v[k]
 		if !ok {
