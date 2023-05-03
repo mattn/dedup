@@ -12,14 +12,27 @@ import (
 	"github.com/syndtr/goleveldb/leveldb/opt"
 )
 
+const name = "dedup"
+
+const version = "0.0.0"
+
+var revision = "HEAD"
+
 func run() int {
 	var f, k string
 	var dump bool
+	var showVersion bool
 
 	flag.StringVar(&f, "f", ".dedup", "storage file")
 	flag.StringVar(&k, "k", "id", "identify for the key")
 	flag.BoolVar(&dump, "dump", false, "dump stored keys")
+	flag.BoolVar(&showVersion, "v", false, "show version")
 	flag.Parse()
+
+	if showVersion {
+		fmt.Println(version)
+		os.Exit(0)
+	}
 
 	store, err := leveldb.OpenFile(f, nil)
 	if err != nil {
